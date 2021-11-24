@@ -1,13 +1,14 @@
 {
   "dependencies": {
+    "express": "^4.17.1",
     "mysql": "^2.18.1"
   },
   "name": "merchant-service",
   "description": "Mini Project Day 26 - API",
   "version": "1.0.0",
   "main": "db_config.js",
-  "devDependencies": {},
   "scripts": {
+    "start": "node ./handler",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
