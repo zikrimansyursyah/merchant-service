@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "mysql": "^2.18.1"
+  },
+  "name": "merchant-service",
+  "description": "Mini Project Day 26 - API",
+  "version": "1.0.0",
+  "main": "db_config.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zikrimansyursyah/merchant-service.git"
+  },
+  "keywords": [
+    "merchant-service",
+    "api"
+  ],
+  "author": "zikri",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zikrimansyursyah/merchant-service/issues"
+  },
+  "homepage": "https://github.com/zikrimansyursyah/merchant-service#readme"
+}
