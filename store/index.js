@@ -1,14 +1,15 @@
-const mysql = require('mysql')
+const mysql = require("mysql");
 
 const con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: ""
-})
+	host: "localhost",
+	user: "root",
+	password: "",
+});
 
 con.connect(function (err) {
-    let sql = "CREATE DATABASE IF NOT EXISTS ecommerce"
-    let tbl_merchant = `CREATE TABLE IF NOT EXISTS merchant (
+	if (err) throw err;
+	let sql = "CREATE DATABASE IF NOT EXISTS ecommerce";
+	let tbl_merchant = `CREATE TABLE IF NOT EXISTS merchant (
         id INT(10) NOT NULL AUTO_INCREMENT,
         password VARCHAR(20) NOT NULL,
         name VARCHAR(30) NOT NULL,
@@ -18,8 +19,8 @@ con.connect(function (err) {
         PRIMARY KEY (id)
     )
     COLLATE='utf8mb4_general_ci'
-    ;`
-    let tbl_product = `CREATE TABLE IF NOT EXISTS product (
+    ;`;
+	let tbl_product = `CREATE TABLE IF NOT EXISTS product (
         id INT(10) NOT NULL AUTO_INCREMENT,
         merchant_id INT(10) NOT NULL,
         name VARCHAR(50) NOT NULL,
@@ -29,24 +30,23 @@ con.connect(function (err) {
         CONSTRAINT mid FOREIGN KEY (merchant_id) REFERENCES merchant (id) ON UPDATE NO ACTION ON DELETE NO ACTION
     )
     COLLATE='utf8mb4_general_ci'
-    ;`
+    ;`;
 
-    con.query(sql, function (err, result) {
-        // database = "todos"
-        con.query("USE ecommerce", function (err, result) {
-            con.query(tbl_merchant, function (err, result) {
-                console.log("Table Merchant Created")
-            })
-            con.query(tbl_product, function (err, result) {
-                console.log("Table Product Created")
-            })
-            console.log("Database Used")
-        })
-        console.log("Database created")
-    })
-})
-
+	con.query(sql, function (err, result) {
+		// database = "todos"
+		con.query("USE ecommerce", function (err, result) {
+			con.query(tbl_merchant, function (err, result) {
+				console.log("Table Merchant Created");
+			});
+			con.query(tbl_product, function (err, result) {
+				console.log("Table Product Created");
+			});
+			console.log("Database Used");
+		});
+		console.log("Database created");
+	});
+});
 
 module.exports = {
-    con: con
-}
+	con: con,
+};
