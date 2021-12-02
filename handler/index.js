@@ -1,10 +1,17 @@
 const express = require('express')
+const basicAuth = require('express-basic-auth')
 const service = require('../services')
 
 const app = express()
 const port = 8000
 
+app.use(basicAuth({
+    users: { 'admin': 'supersecret' }
+}))
 app.use(express.json())
+app.get("/login", (req, res) => {
+    res.send('Login Success')
+})
 app.post("/api/merchant/regis", service.m_regis)
 app.delete("/api/merchant/delete", service.m_delete)
 app.post("/api/product/add", service.p_add)
