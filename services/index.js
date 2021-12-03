@@ -1,4 +1,4 @@
-const { merchantRegis, merchantDelete, productAdd, productDelete, productUpdate, productList } = require("../store");
+const { merchantRegis, merchantDelete, productAdd, productDelete, productUpdate, productList, login, getLogin } = require("../store");
 
 module.exports = {
 	m_regis: function (req, res) {
@@ -24,5 +24,6 @@ module.exports = {
 	p_list: function (req, res) {
 		let { mid } = req.params;
 		productList(mid, res)
-	}
+	},
+	login: login
 };

@@ -133,5 +133,12 @@ module.exports = {
             if (err) throw err;
             res.json(result)
         });
-    }
+    },
+    login: function (arr, fn) {
+        const username = arr[0]
+        const password = arr[1]
+        con.query(`SELECT * FROM merchant WHERE name = '${username}' AND password = '${password}'`, function (err, result) {
+            fn(result)
+        });
+    },
 };
