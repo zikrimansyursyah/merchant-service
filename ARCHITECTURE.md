@@ -1,3 +1,7 @@
+# Simple Architecture Diagram
+
+![Architecture Diagram](./arc_service.png "Architecture Diagram")
+
 # ERD of the merchant service data model
 
 ![Merchant Service ERD!](./erd.png "Merchant Service ERD")
