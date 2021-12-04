@@ -23,7 +23,7 @@ See ARCHITECTURE.md for architecture details
 #### run merchant-service
 - `npm start`
 
-## API Contract
+## API List
 |                |url                            |Requirement                  |Description
 |----------------|-------------------------------|-----------------------------|---
 |Register Merchant|POST `/api/merchant/regis` | set body json `{ name, password, address, phone }` | Add Merchant Account|
