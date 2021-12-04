@@ -29,7 +29,7 @@ function login(req, res, next) {
     const arr = atob(auth.slice(6)).split(":")
     service.login(arr, function (result) {
         if (!result.length) {
-            res.send('Login Gagal')
+            return res.status(403).send({ error: `Login Gagal` });
         } else {
             name = result[0].name
             pass = result[0].pass

@@ -50,15 +50,25 @@ con.connect(function (err) {
 // api request
 module.exports = {
     merchantRegis: function (name, password, address, phone, res) {
-        const sql = `INSERT INTO ecommerce.merchant (password, name, address, phone_number) 
-        VALUES ('${password}', '${name}', '${address}', '${phone}');`;
-        con.query(sql, function (err, result) {
+        const select = `SELECT * FROM ecommerce.merchant WHERE name='${name}'`
+        con.query(select, function (err, result) {
             if (err) throw err;
-            res.json({
-                register: 'success',
-                name: name
-            })
+            console.log(`select ${name} from merchant`);
+            if (!result.length) {
+                const sql = `INSERT INTO ecommerce.merchant (password, name, address, phone_number) VALUES ('${password}', '${name}', '${address}', '${phone}');`;
+                con.query(sql, function (err, result) {
+                    if (err) throw err;
+                    return res.json({
+                        register: 'success',
+                        name: name
+                    })
+                });
+            } else {
+                console.log("username sudah terpakai");
+                return res.status(406).send({ error: `${name} is Exist on Database` });
+            }
         });
+
     },
     merchantDelete: function (id, res) {
         const select = `SELECT * FROM ecommerce.merchant WHERE id=${Number(id)}`
@@ -67,13 +77,13 @@ module.exports = {
             console.log(`select ${id} from merchant`);
             if (!result.length) {
                 console.log("tidak ada data");
-                res.send(`Data id=${id} tidak ada  di table Merchant`);
+                return res.status(404).send({ error: `Merchant ${id} is Not Exist on Database` });
             } else {
                 const sql = `DELETE FROM ecommerce.merchant WHERE id=${Number(id)};`;
                 con.query(sql, function (err, result) {
                     if (err) throw err;
-                    res.json({
-                        delete: 'success',
+                    return res.json({
+                        deleteMerchant: 'success',
                         id: id
                     })
                 });
@@ -81,25 +91,45 @@ module.exports = {
         });
     },
     productAdd: function (mid, name, qty, price, res) {
-        const sql = `INSERT INTO ecommerce.product (merchant_id, name, quantity, price) 
-		VALUES ('${Number(mid)}', '${name}', '${Number(qty)}', '${Number(price)}');`;
-        con.query(sql, function (err, result) {
+        const select = `SELECT * FROM ecommerce.merchant WHERE id=${Number(mid)}`
+        con.query(select, function (err, result) {
             if (err) throw err;
-            res.json({
-                addProduct: 'success',
-                name: name,
-                mid: mid
-            })
+            console.log(`select ${mid} from merchant`);
+            if (!result.length) {
+                console.log("tidak ada data");
+                return res.status(404).send({ error: `Merchant ${mid} is Not Exist on Database` });
+            } else {
+                const sql = `INSERT INTO ecommerce.product (merchant_id, name, quantity, price) VALUES ('${Number(mid)}', '${name}', '${Number(qty)}', '${Number(price)}');`;
+                con.query(sql, function (err, result) {
+                    if (err) throw err;
+                    return res.json({
+                        addProduct: 'success',
+                        name: name,
+                        mid: mid
+                    })
+                });
+            }
         });
+
     },
     productDelete: function (id, res) {
-        const sql = `DELETE FROM ecommerce.product WHERE id=${Number(id)};`;
-        con.query(sql, function (err, result) {
+        const select = `SELECT * FROM product WHERE id=${Number(id)}`
+        con.query(select, function (err, result) {
             if (err) throw err;
-            res.json({
-                deleteProduct: 'success',
-                id: id
-            })
+            console.log(`select ${id} from merchant`);
+            if (!result.length) {
+                console.log("tidak ada data");
+                return res.status(404).send({ error: `Product ${id} is Not Exist on Database` });
+            } else {
+                const sql = `DELETE FROM ecommerce.product WHERE id=${Number(id)};`;
+                con.query(sql, function (err, result) {
+                    if (err) throw err;
+                    return res.json({
+                        deleteProduct: 'success',
+                        id: id
+                    })
+                });
+            }
         });
     },
     productUpdate: function (id, mid, name, qty, price, res) {
@@ -111,7 +141,7 @@ module.exports = {
             console.log(`select product ${id} from ${mid}`);
             if (!result.length) {
                 console.log("tidak ada data");
-                res.send(`Data id=${id} di Merchant ${mid} tidak ada`);
+                return res.status(404).send({ error: `Product ${id} on Merchant ${mid} is Not Exist on Database` });
             } else {
                 if (name === undefined || name === "") {
                     name = result[0].name;
@@ -128,7 +158,7 @@ module.exports = {
                 )}', price='${Number(price)}' WHERE  id=${Number(id)};`;
                 con.query(sql, function (err, result) {
                     if (err) throw err;
-                    res.json({
+                    return res.json({
                         updateProduct: 'success',
                         product_id: id,
                         mid: mid
@@ -138,10 +168,23 @@ module.exports = {
         });
     },
     productList: function (mid, res) {
-        const sql = `SELECT * FROM product WHERE merchant_id=${Number(mid)}`;
-        con.query(sql, function (err, result) {
+        const select = `SELECT * FROM ecommerce.merchant WHERE id=${Number(mid)}`
+        con.query(select, function (err, result) {
             if (err) throw err;
-            res.json(result)
+            console.log(`select ${mid} from merchant`);
+            if (!result.length) {
+                console.log("tidak ada data");
+                return res.status(404).send({ error: `Merchant ${mid} is Not Exist on Database` });
+            } else {
+                const sql = `SELECT * FROM product WHERE merchant_id=${Number(mid)}`;
+                con.query(sql, function (err, result) {
+                    if (err) throw err;
+                    if (!result.length) {
+                        console.log("tidak ada data");
+                        return res.status(404).send({ error: `there are no products at this merchant` });
+                    } else return res.json(result)
+                });
+            }
         });
     },
     login: function (arr, fn) {
