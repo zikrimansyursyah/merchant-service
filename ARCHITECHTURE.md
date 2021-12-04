@@ -1,8 +1,6 @@
 # ERD of the merchant service data model
 
-```
 ![Merchant Service ERD!](./erd.png "Merchant Service ERD")
-```
 
 # API Contract
 
