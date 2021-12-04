@@ -61,13 +61,23 @@ module.exports = {
         });
     },
     merchantDelete: function (id, res) {
-        const sql = `DELETE FROM ecommerce.merchant WHERE id=${Number(id)};`;
-        con.query(sql, function (err, result) {
+        const select = `SELECT * FROM ecommerce.merchant WHERE id=${Number(id)}`
+        con.query(select, function (err, result) {
             if (err) throw err;
-            res.json({
-                delete: 'success',
-                id: id
-            })
+            console.log(`select ${id} from merchant`);
+            if (!result.length) {
+                console.log("tidak ada data");
+                res.send(`Data id=${id} tidak ada  di table Merchant`);
+            } else {
+                const sql = `DELETE FROM ecommerce.merchant WHERE id=${Number(id)};`;
+                con.query(sql, function (err, result) {
+                    if (err) throw err;
+                    res.json({
+                        delete: 'success',
+                        id: id
+                    })
+                });
+            }
         });
     },
     productAdd: function (mid, name, qty, price, res) {

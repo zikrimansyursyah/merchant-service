@@ -1,25 +1,26 @@
-require('dotenv').config()
-
 const express = require('express')
+const cookieParser = require("cookie-parser");
 const basicAuth = require('express-basic-auth')
 const service = require('../services')
 const jwt = require('jsonwebtoken')
 const app = express()
 const port = 8000
 
+app.use(cookieParser())
 app.use(express.json())
 
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
-    if (token == null) return res.sendStatus(401)
-
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        console.log(err)
-        if (err) return res.sendStatus(403)
-        req.user = user
-        next()
-    })
+function authorization(req, res, next) {
+    const token = req.cookies.access_token;
+    if (!token) {
+        return res.sendStatus(403);
+    }
+    try {
+        const data = jwt.verify(token, "YOUR_SECRET_KEY");
+        req.user = data.name
+        return next();
+    } catch {
+        return res.sendStatus(403);
+    }
 }
 
 function login(req, res, next) {
@@ -40,24 +41,14 @@ function login(req, res, next) {
     })
 }
 
-app.post("/login", login, (req, res) => {
-    auth = req.headers.authorization
-    const logData = atob(auth.slice(6)).split(":")
-    const user = { name: logData[0] }
-
-    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-    res.json({
-        login: 'Success',
-        username: logData[0],
-        accessToken: accessToken
-    })
-})
-app.post("/api/merchant/regis", authenticateToken, service.m_regis)
-app.delete("/api/merchant/delete", authenticateToken, service.m_delete)
-app.post("/api/product/add", authenticateToken, service.p_add)
-app.delete("/api/product/delete", authenticateToken, service.p_delete)
-app.post("/api/product/update", authenticateToken, service.p_update)
-app.get("/api/product/:mid", authenticateToken, service.p_list)
+app.post("/login", login, service.loginAuth)
+app.get("/logout", authorization, service.logoutAuth);
+app.post("/api/merchant/regis", service.m_regis)
+app.delete("/api/merchant/delete", authorization, service.m_delete)
+app.post("/api/product/add", authorization, service.p_add)
+app.delete("/api/product/delete", authorization, service.p_delete)
+app.post("/api/product/update", authorization, service.p_update)
+app.get("/api/product/:mid", authorization, service.p_list)
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
