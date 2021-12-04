@@ -1,6 +1,8 @@
 # Welcome to Merchant Service by Zikri
 Hai! this is the first Merchant Service I Ever Made, This merchant-service is also part of the Backend Mini Project that I am currently working on in the Dibimbing Bootcamp Program. this is an open source API that I created and developed, criticism and suggestions for this resource are very wide open. thank you
 
+See ARCHITECTURE.md for architecture details
+
 ## Requirement
 - Node Js (v16.6.1)
 - Express (v4.17.1)
